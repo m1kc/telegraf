@@ -1,8 +1,9 @@
+import core.thread;
+import std.string;
+import std.stdio;
+import std.conv;
 import std.socket;
 import std.socketstream;
-import std.conv;
-import core.thread;
-import std.stdio;
 
 __gshared Connection[] connections = new Connection[0];
 
@@ -24,11 +25,17 @@ class Connection : Thread
 		string ans = to!string(this.stream.readLine());
 		broadcast("-> " ~ ans);
 		this.nickname = ans;
+		this.stream.writeLine("Welcome again, " ~ ans ~ ". New messages will be displayed below.");
 		// process messages
 		while(true)
 		{
 			string msg = to!string(this.stream.readLine());
-			broadcast(this.nickname ~ ": " ~ msg);
+			if (msg.strip().length > 0) broadcast(this.nickname ~ ": " ~ msg);
+			if (!this.socket.isAlive)
+			{
+				//writeln("disconnect");
+				break;
+			}
 		}
 	}
 }
@@ -39,7 +46,14 @@ void broadcast(string msg)
 	{
 		if (c.nickname !is null)
 		{
-			c.stream.writeLine(msg);
+			try
+			{
+				c.stream.writeLine(msg);
+			}
+			catch(Exception e)
+			{
+				// probably disconnected, do nothing
+			}
 		}
 	}
 }
@@ -55,7 +69,6 @@ void main()
 
 	while(true)
 	{
-		Thread.sleep(dur!("msecs")(100));
 		Socket s = listener.accept();
 		Connection conn = new Connection();
 		conn.socket = s;
