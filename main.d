@@ -20,7 +20,7 @@ class Connection : Thread
 	void run()
 	{
 		// set nickname
-		this.stream.write("Choose a nickname: ");
+		this.stream.writeString("Choose a nickname: ");
 		string ans = to!string(this.stream.readLine());
 		broadcast("-> " ~ ans);
 		this.nickname = ans;
