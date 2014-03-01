@@ -42,6 +42,7 @@ class Connection : Thread
 
 void broadcast(string msg)
 {
+	writeln(msg);
 	foreach(Connection c; connections)
 	{
 		if (c.nickname !is null)
@@ -58,14 +59,28 @@ void broadcast(string msg)
 	}
 }
 
-void main()
+void main(string[] args)
 {
 	ushort port = 3214;
+	if (args.length > 1)
+	{
+		if (args[1] == "-h" || args[1] == "--help")
+		{
+			writeln("Usage: telegraf [port]");
+			return;
+		}
+		else
+		{
+			port = parse!ushort(args[1]);
+		}
+	}
 
 	auto listener = new TcpSocket();
 	assert(listener.isAlive);
 	listener.bind(new InternetAddress(port));
 	listener.listen(10);
+
+	writeln("Ready to rock. Port " ~ to!string(port) ~ ".");
 
 	while(true)
 	{
