@@ -16,7 +16,7 @@ class Connection : Thread
 	this()
 	{
 		super( &run );
-    }
+	}
 
 	void run()
 	{
