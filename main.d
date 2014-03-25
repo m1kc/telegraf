@@ -30,7 +30,7 @@ class Connection : Thread
 		while(true)
 		{
 			string msg = to!string(this.stream.readLine());
-			if (msg.strip().length > 0) broadcast(this.nickname ~ ": " ~ msg);
+			if (msg.strip().length > 0) broadcast("\a" ~ this.nickname ~ ": " ~ msg);
 			if (!this.socket.isAlive)
 			{
 				//writeln("disconnect");
