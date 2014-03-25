@@ -36,6 +36,7 @@ class Connection : Thread
 				//writeln("disconnect");
 				break;
 			}
+			sleep(dur!("msecs")(100));
 		}
 	}
 }
